@@ -4,12 +4,16 @@ import com.bank.banking.dto.PageResponseDTO;
 import com.bank.banking.dto.TransactionResponseDTO;
 import com.bank.banking.entity.Transaction;
 import com.bank.banking.enums.TransactionType;
+import com.bank.banking.exception.InvalidDateRangeException;
 import com.bank.banking.respository.TransactionRepository;
+import com.bank.banking.specification.TransactionSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -19,14 +23,25 @@ public class TransactionServiceImpl implements TransactionService{
     TransactionRepository transactionRepository;
 
     @Override
-    public PageResponseDTO<TransactionResponseDTO> getAllTransactions(UUID accountId, TransactionType type, Pageable page) {
-        Page<Transaction> transactions;
+    public PageResponseDTO<TransactionResponseDTO> getAllTransactions(UUID accountId, TransactionType type, LocalDateTime fromDate,
+                                                                      LocalDateTime toDate, Pageable page) {
+
+        Specification<Transaction> spec = Specification.where(
+                TransactionSpecification.hasAccount(accountId));
+
         if(type != null){
-            transactions = transactionRepository.findByTransactionTypeAndFromAccount_BankAccountIdOrTransactionTypeAndToAccount_BankAccountId(type, accountId, type, accountId, page);
+            spec = spec.and(TransactionSpecification.hasType(type));
         }
-        else {
-            transactions = transactionRepository.findByFromAccount_BankAccountIdOrToAccount_BankAccountId(accountId, accountId, page);
+
+        if(fromDate != null && toDate != null && fromDate.isAfter(toDate)){
+            throw new InvalidDateRangeException("FromDate cannot be greater than ToDate");
         }
+
+        if(fromDate != null && toDate != null){
+            spec = spec.and(TransactionSpecification.betweenDates(fromDate, toDate));
+        }
+
+        Page<Transaction> transactions = transactionRepository.findAll(spec, page);
 
         Page<TransactionResponseDTO> dto = transactions.map(transaction -> {
 

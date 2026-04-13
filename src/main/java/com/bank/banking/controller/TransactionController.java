@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RestController
@@ -25,6 +27,12 @@ public class TransactionController {
                                                                                         @RequestParam(defaultValue = "0") int page,
                                                                                         @RequestParam(defaultValue = "5") int size,
                                                                                         @RequestParam(required = false) TransactionType type,
+                                                                                        @RequestParam(required = false)
+                                                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                                                            LocalDateTime fromDate,
+                                                                                        @RequestParam(required = false)
+                                                                                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                                                                                            LocalDateTime toDate,
                                                                                         @RequestParam(defaultValue = "desc") String sort){
 
         Sort sorting = sort.equalsIgnoreCase("desc") ?
@@ -33,7 +41,7 @@ public class TransactionController {
 
         Pageable pageable = PageRequest.of(page,size, sorting);
 
-        PageResponseDTO<TransactionResponseDTO> response = transactionService.getAllTransactions(accountId, type, pageable);
+        PageResponseDTO<TransactionResponseDTO> response = transactionService.getAllTransactions(accountId, type, fromDate, toDate, pageable);
         return ResponseEntity.ok(response);
     }
 }
