@@ -3,6 +3,7 @@ package com.bank.banking.service;
 import com.bank.banking.dto.PageResponseDTO;
 import com.bank.banking.dto.TransactionResponseDTO;
 import com.bank.banking.entity.Transaction;
+import com.bank.banking.enums.TransactionType;
 import com.bank.banking.respository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,8 +19,14 @@ public class TransactionServiceImpl implements TransactionService{
     TransactionRepository transactionRepository;
 
     @Override
-    public PageResponseDTO<TransactionResponseDTO> getAllTransactions(UUID accountId, Pageable page) {
-        Page<Transaction> transactions = transactionRepository.findByFromAccount_BankAccountIdOrToAccount_BankAccountId(accountId,accountId,page);
+    public PageResponseDTO<TransactionResponseDTO> getAllTransactions(UUID accountId, TransactionType type, Pageable page) {
+        Page<Transaction> transactions;
+        if(type != null){
+            transactions = transactionRepository.findByTransactionTypeAndFromAccount_BankAccountIdOrTransactionTypeAndToAccount_BankAccountId(type, accountId, type, accountId, page);
+        }
+        else {
+            transactions = transactionRepository.findByFromAccount_BankAccountIdOrToAccount_BankAccountId(accountId, accountId, page);
+        }
 
         Page<TransactionResponseDTO> dto = transactions.map(transaction -> {
 
