@@ -8,6 +8,7 @@ import com.bank.banking.exception.UserFoundException;
 import com.bank.banking.exception.UserNotFoundException;
 import com.bank.banking.respository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +20,9 @@ public class UserServiceImpl implements UserService{
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
 
     public UserResponseDTO mapToResponse(User user){
@@ -44,6 +48,7 @@ public class UserServiceImpl implements UserService{
         User user = new User();
         user.setUserName(userRequest.getUserName());
         user.setUserEmail(userRequest.getUserEmail());
+        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setUserPhoneNumber(userRequest.getUserPhoneNumber());
 
         User saved = userRepository.save(user);

@@ -77,4 +77,14 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
+
+    public ResponseEntity<Map<String,Object>> handleInvalidCredentialsException(InvalidCredentialsException ex){
+
+        HashMap<String,Object> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+        error.put("status", HttpStatus.BAD_REQUEST.value());
+        error.put("timestamp", LocalDateTime.now());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }
