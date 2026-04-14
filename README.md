@@ -4,32 +4,43 @@
 - Deposit
 - Withdraw
 - Transfer
-- Transaction History (with Pagination, Sorting, Filtering)
+- Transaction History (with Pagination, Sorting & Filtering)
+- Dynamic Filtering using JPA Specifications
+- Global Exception Handling
+- Swagger (OpenAPI) API Documentation
 
 ## Tech Stack
 - Java
 - Spring Boot
 - Spring Data JPA
 - MySQL
+- Swagger (OpenAPI)
 
 ## APIs
-- /api/deposit
-- /api/withdraw
-- /api/transfer
-- /api/transactions/{accountId}
+- /api/users (Create User)
+- /api/users/{id} (Get User)
+- /api/accounts (Create Account)
+- /api/accounts/deposit
+- /api/accounts/withdraw
+- /api/accounts/transfer
+- /api/accounts/{id} (Get Account)
+- /api/transactions/{accountId} (Transaction History with filters)
 
-## Transaction API Supports
-- Pagination (page, size)
-- Sorting (asc/desc based on timestamp)
-- Filter by Transaction Type (DEPOSIT / WITHDRAW)
-- Filter by Date Range (fromDate, toDate)
+## Advanced Concepts Implemented
+- Pagination using Pageable
+- Sorting (ASC/DESC based on timestamp)
+- Filtering by Transaction Type (DEPOSIT / WITHDRAW / TRANSFER)
+- Date Range Filtering (fromDate, toDate)
+- Dynamic Query Building using JPA Specification API
+- Custom Exception Handling (Invalid Date Range, Insufficient Balance, etc.)
 
-## Improvements
-- Initially used long repository query methods (not scalable ❌)
-- Refactored using JPA Specification (Criteria API) ✅
-- Cleaner, dynamic, and maintainable queries
-- Added validation for invalid date ranges (fromDate > toDate)
-- Implemented Global Exception Handling
+## Why Specification?
+Earlier, query methods in repository became complex and hard to maintain when combining multiple filters (type + date + account).  
+To solve this, JPA Specifications were used to build dynamic and scalable queries.
+
+## Swagger UI
+Access API documentation here:
+http://localhost:8080/swagger-ui/index.html
 
 ## Author
 Deepak
