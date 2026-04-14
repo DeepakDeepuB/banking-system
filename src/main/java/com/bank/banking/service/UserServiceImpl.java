@@ -4,6 +4,7 @@ import com.bank.banking.dto.UserRequestDTO;
 import com.bank.banking.dto.UserResponseDTO;
 import com.bank.banking.entity.BankAccount;
 import com.bank.banking.entity.User;
+import com.bank.banking.enums.Role;
 import com.bank.banking.exception.UserFoundException;
 import com.bank.banking.exception.UserNotFoundException;
 import com.bank.banking.respository.UserRepository;
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService{
         user.setUserEmail(userRequest.getUserEmail());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         user.setUserPhoneNumber(userRequest.getUserPhoneNumber());
-
+        user.setRole(userRequest.getRole() != null ? userRequest.getRole() : Role.USER);
         User saved = userRepository.save(user);
         return mapToResponse(saved);
     }

@@ -1,6 +1,7 @@
 package com.bank.banking.entity;
 
 
+import com.bank.banking.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,10 @@ public class User {
 
     @Column(name = "user_phone_number", nullable = false)
     private String userPhoneNumber;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
